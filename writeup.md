@@ -1,8 +1,4 @@
-#**Behavioral Cloning** 
-
----
-
-**Behavioral Cloning Project**
+# **Behavioral Cloning Project**
 
 The goals / steps of this project are the following:
 * Use the simulator to collect data of good driving behavior
@@ -23,36 +19,75 @@ The goals / steps of this project are the following:
 [image7]: ./examples/placeholder_small.png "Flipped Image"
 
 ## Rubric Points
-###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
+### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
 
 ---
-###Files Submitted & Code Quality
+### Files Submitted & Code Quality
 
-####1. Submission includes all required files and can be used to run the simulator in autonomous mode
+#### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
-* writeup_report.md or writeup_report.pdf summarizing the results
+* writeup_report.md summarizing the results
 
-####2. Submission includes functional code
-Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
-```sh
+#### 2. Submission includes functional code
+Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing: 
+```
 python drive.py model.h5
 ```
+The video of the project is uploaded to the youtube: https://youtu.be/tbxJqSKXMdw
 
-####3. Submission code is usable and readable
+#### 3. Submission code is usable and readable
 
 The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 
-####1. An appropriate model architecture has been employed
+#### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+Nvidia pipeline is used in this project with minor modifications. Final model consisted of the following layers:
+ 
+| Layer         		|     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		| 160x320x3 RGB image (normalized to [-0.5, 0.5], a Keras lambda layer)   							| 
+| Convolution 5x5     	| stride: 2x2, depth: 24, subsample: 2x2, activation: Relu|
+| Convolution 5x5     	| stride: 2x2, depth: 36, subsample: 2x2, activation: Relu|
+| Convolution 5x5     	| stride: 2x2, depth: 48, subsample: 2x2, activation: Relu|
+| Convolution 3x3     	| stride: non, depth: 64, activation: Relu|
+| Convolution 3x3     	| stride: non, depth: 64, activation: Relu|										|
+| Flatten		| Output = 400        									|
+| Fully connected		| Output = 120        									|
+| Fully connected		| Output = 84       									|
+| Fully connected		| Output = 1       									|
+ 
+* Model Training
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+  (1) Batch size: since I am using my personal laptop, I decrease the batch size to 32.
+  
+  (2) Learning rate: 0.001, 0.005, and 0,01 are tested, and 0.001 is best.
+  
+  (3) Epochs: 10, 20, 30, and 40 are examined, and 30 is selected.
+  
+  (4) The range of cropped: 3, 4, and 5 pixels from each edge are tested, and cropping 4 pixels shows the best performance.
+  
+  (5) Brightness augmenting: different levels of brightness augmenting are tested, but none of them shows significant improvement.
+  
+* Solution Approach
+  This trained model via using parameter-setting mentioned above gets 0.940 accuracy on validation data and 0.922 accuracy on testing data.
+* Use the model to make predictions on 6 new images, please refer to the ipynb or its html file those images.
+  The prediction accuracy is 1.00.
+  Here are the results of the prediction:
+
+| Image			        |     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Speed limit (30km/h)      		| Speed limit (30km/h)   									| 
+| Priority road     			| Priority road 										|
+| No entry        		| No entry    									| 
+| Turn right ahead					| Turn right ahead											|
+| Go straight or right     		| Go straight or right				 				|
+| Roundabout mandatory			| Roundabout mandatory      							|
 
 ####2. Attempts to reduce overfitting in the model
 
